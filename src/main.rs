@@ -11,6 +11,8 @@ fn sintaxe() {
   
   // valor da variável não pode ser modificado, só com let mut
   // tipo é opcional, o padrão é :i32 (inteiro 32bytes)
+
+
   
   // u = unsigned sempre positivo
   let variavelu:u8 = 1;
@@ -174,7 +176,163 @@ fn resultado() -> Result<String, u8>
   //Código de erro
     Err(42)
 }
+
+fn array(){
+  // Pode usar também -> usize e isize <- (quando é o compilador que decide o tipo e tamanho de bits de acordo com o computador que está fazendo a compilação)
+  
+  //let notas = [10f32,8f32,9.5,6.0];
+  //ou para especificar o tipo e a quantidade:
+  let notas: [f32; 4] = [10.0,8.0,9.5,6.0];
+  for nota in notas{
+    println!("Nota {}",nota);
+  }
+  //ou usando o indice
+  for indice in 0..notas.len(){
+    println!("Posição {} => Nota {}",indice+1,notas[indice]);
+  }
+  // array com o mesmo múmero:
+  let repete: [f32; 4] = [6.0;4];
+  for num in repete{
+    println!("Numero repetido: {}",num);
+  }
+}
+
+fn matriz(){
+  //para criar a matriz:
+  let matriz: [[f32;3];3] = [
+    [0.0,1.0,2.0],
+    [3.0,4.0,5.0],
+    [6.0,7.0,8.0]
+  ];
+  // para percorrer a matriz:
+  for linha in matriz{
+    for item in linha{
+      println!("Num {}",item);
+    }
+  }
+}
+
+//pode criar variáveis e valores com esse tipo, como se fosse um tipo de variável (inteiro, float etc)
+//para tirar os warnings tem que usar todos os tipos (seg,ter,qua,qui..)
+enum DiaDaSemana{
+  Domingo,
+  Segunda,
+  Terça,
+  Quarta,
+  Quinta,
+  Sexta,
+  Sabado
+}
+
+fn fds(dia_da_semana: DiaDaSemana) -> bool{
+  match dia_da_semana{
+    DiaDaSemana::Domingo | DiaDaSemana::Sabado => true,
+    _ => false
+  }
+}
+
+
+fn enumeracoes(){
+  println!("é fim de semana? {}", fds(DiaDaSemana::Domingo));
+}
+
+// Vai ler um arquivo ou conteudo, se tiver vazio avisa, senao, manda o conteudo
+fn conteudo_opcional() {
+    let conteudo_arquivo = ler_arquivo(String::from(""));
+
+    match &conteudo_arquivo {
+        Some(valor) => println!("{}", valor),
+        None => println!("Arquivo nao existe")
+    };
+
+    println!("{:?}", conteudo_arquivo);
+
+    if let Some(valor) = conteudo_arquivo {
+        println!("Agora, tenho certeza de ha o valor {}", valor);
+    }
+}
+
+fn ler_arquivo(caminho_arquivo: String) -> Option<String> {
+    Some(String::from("Algum conteudo"))
+}
+
+fn vectors(){
+  //ARRAY: vetores com tamanhos prá definidos
+  //VECTORS: vetores com tamanhos dinamicos
+  let mut notas: Vec<f32> = Vec::new();
+  notas.push(10.0);
+  notas.push(8.8);
+  notas.push(6.5);
+  //OUU
+  let notas2: Vec<f32> = vec![10.0,8.8,6.5];
+
+  println!("{:?}",notas);
+  println!("{:?}",notas2);
+
+  //ou focar na capacidade do vec
+  let notas3: Vec<f32> = Vec::with_capacity(4);
+  notas.push(10.0);
+  notas.push(8.8);
+  notas.push(6.5);
+  //aqui tem capacidade para 4 elementos mas só utiliza 3, pq é pode ter menos mas nao pode ter mais que a capacidade total
+  println!("Capacidade = {}", notas3.capacity());
+  
+  //para acessar um valor específico
+  println!("Nota 1 = {}", notas[0]);
+
+  //acessar um valor se tiver ou nao
+  println!("Nota 6 = {}", match notas.get(7){
+    Some(n) => *n,
+    None => 0.0
+  });
+
+  //.pop() -> Pega o ultimo valor, retorna e exclui ele
+  //if let some = se tiver algum valor..
+  if let Some(nota) = notas.pop(){
+    println!("Ultimo valor = {}",nota);
+    println!("{:?}",notas);
+  }
+
+  //percorrendo um vec
+  for nota in &notas{
+    println!("Nota = {}", nota);
+  }
+  println!("{:?}",notas);
+}
+
+//tipo um classe
+struct Conta {
+  titular: Titular,
+  saldo: f64
+}
+
+//método tipo POO, tipo funções
+//self = referencia à struct original (&), se for mudar tem que avisar com &mut
+impl Conta{
+  fn sacar(&mut self,valor: f64){
+    self.saldo -= valor;
+  }
+}
+
+struct Titular{
+  nome: String,
+  sobrenome: String
+}
+
+fn conta_corrente(){
+  let titular = Titular{nome: String::from("Joao"),sobrenome: String::from("Antonio")};
+  let mut conta: Conta = Conta{
+    titular,
+    saldo: 100.0
+  };
+
+  conta.sacar(50.0);
+  
+  println!("Dados da conta: Titular = {} {}, Saldo = {}", conta.titular.nome, conta.titular.sobrenome, conta.saldo);
+}
+
 fn main(){
+  println!("---------PARTE 1------------");
   sintaxe();
   func(2,2);
   estruturas_de_controle();
@@ -182,6 +340,13 @@ fn main(){
   ownership();
   pattern_matching();
   erros();
+  println!("---------PARTE 2------------");
+  array();
+  matriz();
+  enumeracoes();
+  conteudo_opcional();
+  vectors();
+  conta_corrente();
 }
 
 // Se precisar usar cógigos externos / dependências:
